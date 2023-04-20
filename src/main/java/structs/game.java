@@ -1,8 +1,15 @@
-package org.acme;
+package structs;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.json.JSONObject;
 
-public class game {
+import database.db;
+import io.quarkus.logging.Log;
+
+public class game extends dbItem{
     //Each game has a name, that is not null, but is changeable
     private String name;
     //Each game might have a release date, but once it's set it's unchangeable
@@ -45,7 +52,27 @@ public class game {
     public String getStudio(){
         return this.studio;
     }
-    
+
+    public boolean insertInto(){
+        try(
+            Connection conn = db.getConn();
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO games(name, date, studio) VALUES(?1, ?2, ?3)");
+        ){
+            pstmt.setString(1, this.name);
+            pstmt.setString(2, this.date);
+            pstmt.setString(3, this.studio);
+            pstmt.executeUpdate();
+            pstmt.close();
+            //conn.commit();
+            conn.close();
+            return true;
+        }   
+        catch(SQLException e){
+            Log.error(e.getMessage());
+            return false;
+        }
+    }
+
     public JSONObject toJSON(){
         JSONObject obj = new JSONObject();
         obj.put("name", this.name);

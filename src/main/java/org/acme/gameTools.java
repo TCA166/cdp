@@ -14,7 +14,8 @@ import org.jboss.resteasy.reactive.RestForm;
 
 import database.db;
 
-import io.quarkus.logging.Log; 
+import io.quarkus.logging.Log;
+import structs.game; 
 
 @Path("games")
 public class gameTools {
@@ -65,23 +66,11 @@ public class gameTools {
         if(studio == null){
             studio = "";
         }
-        try(
-            Connection conn = db.getConn();
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO games(name, date, studio) VALUES(?1, ?2, ?3)");
-        ){
-            pstmt.setString(1, name);
-            pstmt.setString(2, date);
-            pstmt.setString(3, studio);
-            pstmt.executeUpdate();
-            pstmt.close();
-            //conn.commit();
-            conn.close();
-            return ResponseBuilder.ok().build();
-        }   
-        catch(SQLException e){
-            Log.error(e.getMessage());
+        game g = new game(name, date, studio);
+        if(!g.insertInto()){
             return ResponseBuilder.create(500, "Internal error during deletion").build();
         }
+        return ResponseBuilder.ok().build();
     }
 
     @POST 

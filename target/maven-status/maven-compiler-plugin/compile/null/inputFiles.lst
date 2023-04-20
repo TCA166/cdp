@@ -1,6 +1,8 @@
-/home/tca/java/cdp/src/main/java/org/acme/game.java
+/home/tca/java/cdp/src/main/java/structs/game.java
+/home/tca/java/cdp/src/main/java/structs/key.java
 /home/tca/java/cdp/src/main/java/org/acme/gameResource.java
+/home/tca/java/cdp/src/main/java/structs/dbItem.java
 /home/tca/java/cdp/src/main/java/database/db.java
-/home/tca/java/cdp/src/main/java/org/acme/key.java
 /home/tca/java/cdp/src/main/java/org/acme/gameTools.java
 /home/tca/java/cdp/src/main/java/org/acme/keyTools.java
+/home/tca/java/cdp/src/main/java/structs/user.java

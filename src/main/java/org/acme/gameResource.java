@@ -18,14 +18,15 @@ import org.json.JSONArray;
 
 import database.db;
 
-import io.quarkus.logging.Log; 
+import io.quarkus.logging.Log;
+import structs.game; 
 
 //endpoint for browsing games
 @Path("/games")
 public class gameResource {
 
     //Gets the data from the sql database
-    private List<game> getGames() throws SQLException {
+    private List<game> getGames(){
         //Select data from database
         try (
             Connection conn = db.getConn();
@@ -52,7 +53,7 @@ public class gameResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String returnGames(@QueryParam("name") String name, @QueryParam("date") String date, @QueryParam("studio") String studio) throws SQLException{
+    public String returnGames(@QueryParam("name") String name, @QueryParam("date") String date, @QueryParam("studio") String studio){
         List<game> result = getGames();
         //Parse into JSON
         JSONArray json = new JSONArray();
