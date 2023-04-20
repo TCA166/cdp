@@ -10,12 +10,11 @@ import static org.hamcrest.CoreMatchers.is;
 public class GreetingResourceTest {
 
     @Test
-    public void testHelloEndpoint() {
+    public void testGamesEndpoint() {
         given()
-          .when().get("/hello")
+          .when().get("/games")
           .then()
-             .statusCode(200)
-             .body(is("Hello from RESTEasy Reactive"));
+             .statusCode(200);
     }
 
 }
