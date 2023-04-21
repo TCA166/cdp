@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS keys;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS owners;
 
 CREATE TABLE "games" (
 	"uid"	INTEGER NOT NULL UNIQUE,
@@ -29,3 +30,9 @@ CREATE TABLE "users" (
 	PRIMARY KEY("uid")
 );
 
+CREATE TABLE "owners" (
+	"user"	INTEGER NOT NULL,
+	"game"	INTEGER NOT NULL,
+	FOREIGN KEY("game") REFERENCES "games"("uid"),
+	FOREIGN KEY("user") REFERENCES "users"("uid")
+);

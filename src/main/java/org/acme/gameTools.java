@@ -32,11 +32,17 @@ public class gameTools {
             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM games WHERE uid=?1");
         ){
             pstmt.setString(1, Integer.toString(uid));
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
             pstmt.close();
             //conn.commit();
             conn.close();
-            return ResponseBuilder.ok().build();
+            if(res == 1){
+                return ResponseBuilder.ok().build();
+            }
+            else{
+                return ResponseBuilder.create(500, "SQL query did something unexpected: altered " + Integer.toString(res)).build();
+            }
+            
         }
         catch(SQLException e){
             Log.error(e.getMessage());
@@ -93,11 +99,16 @@ public class gameTools {
         ){
             pstmt.setString(2, val);
             pstmt.setString(3, uid);
-            pstmt.executeUpdate();
+            int res = pstmt.executeUpdate();
             pstmt.close();
             //conn.commit();
             conn.close();
-            return ResponseBuilder.ok().build();
+            if(res == 1){
+                return ResponseBuilder.ok().build();
+            }
+            else{
+                return ResponseBuilder.create(500, "SQL query did something unexpected: altered " + Integer.toString(res)).build();
+            }
         }   
         catch(SQLException e){
             Log.error(e.getMessage());

@@ -67,9 +67,8 @@ public class keyTools {
 
     //Essentially login
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("/get")
-    public String getKey(@RestForm("login") String login, @RestForm("pass") String pass, @RestForm("expiry") String expiry){
+    public RestResponse<Object> getKey(@RestForm("login") String login, @RestForm("pass") String pass, @RestForm("expiry") String expiry){
         user u;
         try(
             Connection conn = db.getConn();
@@ -84,15 +83,20 @@ public class keyTools {
             pstmt.close();
             conn.close();
             if(!u.passMatch(pass)){
-                return "Login failed";
+                return ResponseBuilder.create(400, "Login failed").build();
             }
         }
         catch(Exception e){
             Log.error(e.getMessage());
-            return "Error during login";
+            return ResponseBuilder.create(500, "Error during login").build();
         }
         //Expiry date attribute checks
-        if(expiry.equals("auto")){
+        if(expiry == null){
+            if(!u.isAdmin()){
+                return ResponseBuilder.create(401, "Unauthorized to create keys without an expiry date").build();
+            }
+        }
+        else if(expiry.equals("auto")){
             Date today = new Date();
             Calendar c = Calendar.getInstance(); 
             c.setTime(today); 
@@ -103,18 +107,15 @@ public class keyTools {
         }
         else if(expiry != null){
             if(expiry.length() != 10){
-                return "Date should be in format YYYY-MM-DD";
+                return ResponseBuilder.create(400, "Date should be in format YYYY-MM-DD").build();
             }
-        }
-        else if(!u.isAdmin()){
-            return "Unauthorized to create keys without an expiry date";
         }
         //Create key object
         key newKey = new key(expiry, u.isAdmin(), u.getUid());
         if(!newKey.insertInto()){
-            return "Internal error during database insertion";
+            return ResponseBuilder.create(500, "Internal error during database insertion").build();
         }
-        return newKey.toJSON().toString();
+        return ResponseBuilder.ok().entity(newKey.toJSON().toString()).build();
     }
 
     //Just plain user register

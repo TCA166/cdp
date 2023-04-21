@@ -4,7 +4,7 @@ A demo backend API for an online game store.
 
 ## API Endpoints
 
-1. GET /game
+1. GET /games
     Returns all games in the database in the JSON format.
     Arguments:
     - name:str
@@ -14,20 +14,20 @@ A demo backend API for an online game store.
     - date:str(10)
         A string that each result's release date must contain
 
-2. POST /game
+2. POST /games
     Returns all owned games by the user associated with the provided key.
     Arguments:
     - key:str
         Key used for authentication
 
-3. POST /game/delete
+3. POST /games/delete
     Deletes a game entry from the database with the provided uid.
     Arguments:
     - key:str
     - uid:int
         Id of game to be deleted
 
-4. POST /game/add
+4. POST /games/add
     Adds a new game entry to the database with the attributes in arguments.
     Arguments:
     - key:str
@@ -35,13 +35,13 @@ A demo backend API for an online game store.
     - date:str
     - studio:str
 
-5. POST /game/update
+5. POST /games/update
     Updates a single game entry attribute.
     - key:str
     - uid:int
     - attr:str
         Attribute key to be updated.
-    - var:str
+    - val:str
         Value to update the attribute with.
 
 6. POST /key/valid
@@ -82,6 +82,23 @@ Admin users cannot be created without manual access to the database, which is a 
 Due to it's relative simplicity and my experience with it I chose sqlite as the engine to power the database.
 It removes a lot of the unnecessary data types from SQL while keeping all the necessary features.  
 ![Database diagram](db.png "Database diagram")
+
+## Example commands for testing
+
+```Bash
+curl -X GET localhost:8080/games
+#outputs json contents of table games
+curl -d "key=4shrg654ccI=" -X POST localhost:8080/key/valid
+#true
+curl -d "key=4shrg654ccI=" -X POST localhost:8080/key/valid/admin
+#false
+curl -d "key=test" -X POST localhost:8080/key/valid/admin
+#true
+curl -d "key=4shrg654ccI=" -X POST localhost:8080/games
+#[{"date":"1993-12-10","studio":"ID","name":"Doom"}]
+curl -d "login=test&pass=1234&expiry=auto" -X POST localhost:8080/key/get
+#json with key and expiry
+```
 
 ## Notes
 
