@@ -14,15 +14,20 @@ A demo backend API for an online game store.
     - date:str(10)
         A string that each result's release date must contain
 
-2. POST /game/delete
-    Deletes a game entry from the database with the provided uid.
+2. POST /game
+    Returns all owned games by the user associated with the provided key.
     Arguments:
     - key:str
         Key used for authentication
+
+3. POST /game/delete
+    Deletes a game entry from the database with the provided uid.
+    Arguments:
+    - key:str
     - uid:int
         Id of game to be deleted
 
-3. POST /game/add
+4. POST /game/add
     Adds a new game entry to the database with the attributes in arguments.
     Arguments:
     - key:str
@@ -30,7 +35,7 @@ A demo backend API for an online game store.
     - date:str
     - studio:str
 
-4. POST /game/update
+5. POST /game/update
     Updates a single game entry attribute.
     - key:str
     - uid:int
@@ -39,14 +44,14 @@ A demo backend API for an online game store.
     - var:str
         Value to update the attribute with.
 
-5. POST /key/valid
+6. POST /key/valid
     Returns if the key in POST arguments is valid.
     1. POST /key/valid/admin
-        Returns if the key in POST arguments is valid and admin capable.
+        Returns if the key in POST arguments is valid and admin capable.  
     Arguments:
     - key:str
 
-6. POST /key/register
+7. POST /key/register
     Registers the user and makes him eligible to receive keys.
     Arguments:
     - login:str
@@ -54,7 +59,7 @@ A demo backend API for an online game store.
     - pass:str
         A user password used in tandem with login.
 
-7. POST /key/get
+8. POST /key/get
     Issues a new key for the user, with a permission level fitting their user permission level.
     Arguments:
     - login:str
@@ -75,8 +80,8 @@ Admin users cannot be created without manual access to the database, which is a 
 ## Database
 
 Due to it's relative simplicity and my experience with it I chose sqlite as the engine to power the database.
-It removes a lot of the unnecessary data types from SQL while keeping all the necessary features.
-![Datbase diagram](db.png "Database diagram")
+It removes a lot of the unnecessary data types from SQL while keeping all the necessary features.  
+![Database diagram](db.png "Database diagram")
 
 ## Notes
 

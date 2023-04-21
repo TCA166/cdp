@@ -5,6 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.POST;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,10 @@ import java.util.List;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
+import org.jboss.resteasy.reactive.RestForm;
 import org.json.JSONArray;
 
 import database.db;
@@ -75,6 +78,46 @@ public class gameResource {
             if(arg1 && arg2 && arg3){
                 json.put(g.toJSON());
             }
+        }
+        //Return
+        return json.toString();
+    }
+
+    //very similar to getGames() but filters games by key
+    private List<game> getOwnedGames(String key){
+        try(
+            Connection conn = db.getConn();
+            PreparedStatement pstmt = conn.prepareStatement(
+                //that databases class coming in real handy rn
+                "SELECT name, date, studio FROM games WHERE uid IN (SELECT game FROM owners WHERE user=(SELECT uid FROM users JOIN(SELECT owner FROM keys WHERE key=?1) ON owner=uid))" 
+            );
+        )
+        {
+            pstmt.setString(1, key);
+            ResultSet rs = pstmt.executeQuery();
+            List<game> result = new ArrayList<game>();
+            while(rs.next()) {
+                game g = new game(rs.getString("name"), rs.getString("date"), rs.getString("studio"));
+                result.add(g);
+            }
+            rs.close();
+            pstmt.close();
+            conn.close();
+            return result;
+        } catch (SQLException e) {
+            Log.error(e.getMessage());
+            return null;
+        }
+    }
+
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public String returnOwnedGames(@RestForm("key") String key){
+        List<game> result = getOwnedGames(key);
+        JSONArray json = new JSONArray();
+        for(game g : result){
+            json.put(g.toJSON());
         }
         //Return
         return json.toString();
