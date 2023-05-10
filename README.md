@@ -122,3 +122,4 @@ curl -d "login=test&pass=1234&expiry=auto" -X POST localhost:8080/key/get
 
 - I had trouble with Java setup, thus two jar files are bundled.
 - The games table has very little columns, but that's not important and can be easily changed.
+- This was ultimetely rejected. It was noted however that I could have improved this project using a REST approach(guess using the Quarkus rest client wasn't RESTful enough) and I shouldn't have developed my own authorisation system and used a premade one
